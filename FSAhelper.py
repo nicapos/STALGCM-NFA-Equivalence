@@ -78,10 +78,20 @@ def reduceFSA(fsa:FSA):
             partition_algo.set[2] = ['F']               no initial state        sub_rep[2] = 'A'
     """
     new_Q = []
+    new_I = None
+    new_F = []
     for subset in partition_algo.set:
-        new_Q.append(fsa.initial_state if fsa.initial_state in subset else subset[0])
+        repr = fsa.initial_state if fsa.initial_state in subset else subset[0]
+        new_Q.append(repr)
 
-    fsa.states = set(new_Q) # 3.1 update states
+        if any(state == fsa.initial_state for state in subset):
+            new_I = repr
+        if any(state in fsa.final_states for state in fsa.states):
+            new_F.append(repr)
+
+    fsa.states = set(new_Q)
+    fsa.initial_state = new_I
+    fsa.final_states = new_F
 
     # 3.2 update transitions
     new_tMap = TransitionMap(fsa.stimulus)
