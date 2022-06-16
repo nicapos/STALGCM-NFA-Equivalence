@@ -1,6 +1,7 @@
 from FSA import *
 from FSAhelper import *
 from partition import Partition
+from debug import *
 
 def parser():
     """
@@ -40,4 +41,24 @@ def parser():
     return FSA(name, Q, S, tMap, qI, F)
 
 if __name__ == "__main__":
-    pass
+    M = []
+    while True:     # do while
+        M.append(parser())
+        try:
+            input()
+        except EOFError:
+            break
+
+    printFSA(M[0])
+    convertToDFA(M[0])
+    reduceFSA(M[0])
+    print("\nReduced:")
+    printFSA(M[0])
+
+    print("-------------------------")
+
+    printFSA(M[1])
+    convertToDFA(M[1])
+    reduceFSA(M[1])
+    print("\nReduced:")
+    printFSA(M[1])

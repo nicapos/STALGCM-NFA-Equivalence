@@ -2,7 +2,7 @@ from FSA import FSA
 
 class Partition:
     def __init__(self, transition_func, stimulus:list, final_states:list, nonfinal_states:list):
-        self.set = [final_states, nonfinal_states]
+        self.set = [list(final_states), nonfinal_states]
         self.stimulus = stimulus
         self.next_state = transition_func # is a method
 
@@ -12,7 +12,7 @@ class Partition:
             [ ['A', 'B', 'D'], ['C', 'E'], ['F']  ]
             find_subset('E') returns 1, find_subset('B') returns 0
     """
-    def find_subset(self, state:str) -> int:
+    def find_subset(self, state) -> int:
         for i in range( len(self.set) ):
             if state in self.set[i]:
                 return i
@@ -24,7 +24,7 @@ class Partition:
             self.set is updated to [ ['A', 'B'], ['C', 'D', 'E'], ['F'] ]
     """
     def step(self):
-        partition = {}
+        partition_blocks = []
         """
             dict where key -> indices, value -> states.
             Example: {
@@ -35,18 +35,22 @@ class Partition:
         """
 
         for subset in self.set:
+            block = {}
             for src_state in subset:
                 # get subset index of each dest
                 indices = ''
                 for input in self.stimulus:
-                    next_state =  self.next_state(src_state, input)
+                    next_state = ''.join(self.next_state(src_state, input))
                     indices += str(self.find_subset(next_state))
 
                 # if indices not in partition, add it
-                if indices not in partition.keys():
-                    partition[indices] = []
+                if indices not in block.keys():
+                    block[indices] = []
 
                 # add src state to partition group with the same indices
-                partition[indices].append(src_state)
+                block[indices].append(src_state)
 
-        return list(partition.values())
+            for new_block in block.values():
+                partition_blocks.append(new_block)
+        
+        self.set = partition_blocks
