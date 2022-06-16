@@ -11,12 +11,18 @@ def convertToDFA(fsa:FSA):
 
     new_states = []
     new_tMap = TransitionMap(fsa.stimulus)
+    new_initial = None
+    new_finals = []
 
     while i < len(explore_states):
         state_list = explore_states[i]      # ex. ['A','B','C']
         state_label = ''.join(state_list)   # ex. 'ABC'
 
         new_states.append(state_label)      # add states to list of new states
+        if any(state == fsa.initial_state for state in state_list):
+            new_initial = state_label
+        if any(state in fsa.final_states for state in state_list):
+            new_finals.append(state_label)
 
         for input in fsa.stimulus:
             # get next state/s (dest) from current state (src)
@@ -39,6 +45,8 @@ def convertToDFA(fsa:FSA):
 
     fsa.states = new_states
     fsa.transition = new_tMap
+    fsa.initial_state = new_initial
+    fsa.final_states = new_finals
 
 def reduceFSA(fsa:FSA):
     """
