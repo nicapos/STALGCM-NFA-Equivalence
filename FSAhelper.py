@@ -58,6 +58,17 @@ def reduceFSA(fsa:FSA):
         partition_algo.step()
 
     # 3. update FSA based on partition subsets
+    """
+        For each subset in partition, let one state be the "representative" for each subset
+            If may initial state sa subset, let that be the "representative"
+            If walang initial state, let the first state be the "representative"
+        Store "representatives" in new_Q list 
+        Example:
+            partition_algo.set = [ ['A', 'B', 'D'], ['C', 'E'], ['F']  ] ; 'E' is an initial state
+            partition_algo.set[0] = ['A', 'B', 'D']     no initial state        sub_rep[0] = 'A'
+            partition_algo.set[1] = ['C', 'E']          E is an initial state   sub_rep[1] = 'E'
+            partition_algo.set[2] = ['F']               no initial state        sub_rep[2] = 'A'
+    """
     new_Q = []
     for subset in partition_algo.set:
         new_Q.append(fsa.initial_state if fsa.initial_state in subset else subset[0])
