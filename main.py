@@ -3,7 +3,7 @@ from FSAhelper import *
 from partition import Partition
 from debug import *
 
-def parser():
+def parser(machine_number: int):
     """
         Accept input then return a machine
 
@@ -20,6 +20,7 @@ def parser():
             <|F| lines follow, each with a final state, which is a valid member of Q from above>
     """
     name = input()
+    name[1] = machine_number
 
     nQ = int(input())
     Q = [input() for _ in range(nQ)]
@@ -42,8 +43,10 @@ def parser():
 
 if __name__ == "__main__":
     M = []
+    machine_number = 0
     while True:     # do while
-        M.append(parser())
+        M.append(parser(machine_number))
+        machine_number += 1
         try:
             input()
         except EOFError:
