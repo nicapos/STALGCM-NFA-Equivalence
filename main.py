@@ -20,7 +20,7 @@ def parser(machine_number: int):
             <|F| lines follow, each with a final state, which is a valid member of Q from above>
     """
     name = input()
-    name[1] = machine_number
+    name.replace(name[1], machine_number)
 
     nQ = int(input())
     Q = [input() for _ in range(nQ)]
