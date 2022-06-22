@@ -1,23 +1,6 @@
-"""
-NOTE: buggy pa to
-
-ISSUE:
-    If the two FSAs have states na same name, malilito si joint transition map
-    Ex. FSA1 has a state named 'Q0' pero FSA2 also has a state named 'Q0'
-        di alam ni get_next_state kung san sya kukuha ng dest state
-        by default, sa FSA1 nya muna iccheck
-
-POSSIBLE SOLUTION:
-    Create a new method that renames all states in an FSA
-    (tho you also have to rename the states in its TransitionMap so baka mahaba haba to)
-    tas sa start ng is_equivalent(), call that method to rename the machines from A to Z (or hanggang saan aabot)
-
-    method = function btw
-    w3schools has python cheatsheet dun ko ginogoogle lahat HSHAHAHA
-"""
-
 from FSA import *
 from partition import Partition
+from FSAhelper import *
 
 def is_equivalent(fsa1:FSA, fsa2:FSA) -> bool:
     """
@@ -29,11 +12,26 @@ def is_equivalent(fsa1:FSA, fsa2:FSA) -> bool:
     if fsa1.stimulus != fsa2.stimulus:
         return False
 
-    # 1. Prepare sets for partition. 1 set for final states, 1 set for non-final states
+    # 1. convert to DFA then reduce
+    convertToDFA(fsa1)
+    reduceFSA(fsa1)
+    convertToDFA(fsa2)
+    reduceFSA(fsa2)
+
+    # 2. rename the machines (to prevent them from having the same state names)
+    STATE_NAMES = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+    new_states1 = [STATE_NAMES.pop(0) for _ in range(len(fsa1.states))]
+    renameFSAstates(fsa1, new_states1)
+
+    new_states2 = [STATE_NAMES.pop(0) for _ in range(len(fsa2.states))]
+    renameFSAstates(fsa2, new_states2)
+
+    # 3. Prepare sets for partition. 1 set for final states, 1 set for non-final states
     final_states = list(fsa1.final_states) + list(fsa2.final_states)
     nonfinal_states = [S for S in list(fsa1.states) + list(fsa2.states) if S not in final_states]
 
-    # 2. Prepare joint transition map for the two FSAs
+    # 4. Prepare joint transition map for the two FSAs
     def get_next_state(src, input):
         if src in fsa1.states:
             return fsa1.get_next_state(src, input)
@@ -54,8 +52,6 @@ def is_equivalent(fsa1:FSA, fsa2:FSA) -> bool:
 
     prev_partition_set = None
     while True:
-        # print(prev_partition_set == partition_algo.set, partition_algo.find_subset(fsa1.initial_state) != partition_algo.find_subset(fsa2.initial_state))
-        # DEBUG
         if prev_partition_set == partition_algo.set:
             break
         elif partition_algo.find_subset(fsa1.initial_state) != partition_algo.find_subset(fsa2.initial_state):
