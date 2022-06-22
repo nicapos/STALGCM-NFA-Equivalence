@@ -35,9 +35,9 @@ def is_equivalent(fsa1:FSA, fsa2:FSA) -> bool:
 
     # 2. Prepare joint transition map for the two FSAs
     def get_next_state(src, input):
-        if input in fsa1.states:
+        if src in fsa1.states:
             return fsa1.get_next_state(src, input)
-        elif input in fsa2.states:
+        elif src in fsa2.states:
             return fsa2.get_next_state(src, input)
 
     """
@@ -54,12 +54,14 @@ def is_equivalent(fsa1:FSA, fsa2:FSA) -> bool:
 
     prev_partition_set = None
     while True:
+        # print(prev_partition_set == partition_algo.set, partition_algo.find_subset(fsa1.initial_state) != partition_algo.find_subset(fsa2.initial_state))
+        # DEBUG
         if prev_partition_set == partition_algo.set:
             break
         elif partition_algo.find_subset(fsa1.initial_state) != partition_algo.find_subset(fsa2.initial_state):
             break
 
-        prev_partition_set = partition_algo
+        prev_partition_set = partition_algo.set
         partition_algo.step()
 
     return partition_algo.find_subset(fsa1.initial_state) == partition_algo.find_subset(fsa2.initial_state)

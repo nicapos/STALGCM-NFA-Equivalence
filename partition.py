@@ -6,6 +6,8 @@ class Partition:
         self.stimulus = stimulus
         self.next_state = transition_func # is a method
 
+        self.LIMIT = 10 # DEBUG
+
     """
         Finds the subset index of a state.
         Example:
@@ -24,6 +26,8 @@ class Partition:
             self.set is updated to [ ['A', 'B'], ['C', 'D', 'E'], ['F'] ]
     """
     def step(self):
+        if self.LIMIT == 0: # DEBUG
+            raise Exception("Partition limit reached.")
         partition_blocks = []
         """
             dict where key -> indices, value -> states.
@@ -54,3 +58,4 @@ class Partition:
                 partition_blocks.append(new_block)
         
         self.set = partition_blocks
+        self.LIMIT -= 1 # DEBUG
