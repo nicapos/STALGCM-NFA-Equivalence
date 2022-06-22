@@ -86,7 +86,7 @@ def reduceFSA(fsa:FSA):
 
         if any(state == fsa.initial_state for state in subset):
             new_I = repr
-        if any(state in fsa.final_states for state in fsa.states):
+        if any(state in fsa.final_states for state in fsa.states) and subset != ['']:
             new_F.append(repr)
 
     fsa.states = set(new_Q)
