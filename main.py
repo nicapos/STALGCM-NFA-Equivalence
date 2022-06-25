@@ -43,7 +43,7 @@ def readNFA(id:int):
 
 if __name__ == "__main__":
     NFAs = []
-    N = input() # num of NFAs to read
+    N = int(input()) # num of NFAs to read
 
     for i in range(N):
         input() # read empty line
