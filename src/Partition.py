@@ -1,4 +1,4 @@
-from FSA import FSA
+from src.FSA import FSA
 
 class Partition:
     def __init__(self, transition_func, stimulus:list, final_states:list, nonfinal_states:list):

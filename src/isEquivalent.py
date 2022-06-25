@@ -1,5 +1,5 @@
 from functools import reduce
-from FSA import *
+from src.FSA import *
 from Partition import Partition
 from FSAhelper import *
 

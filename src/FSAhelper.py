@@ -1,4 +1,4 @@
-from FSA import *
+from src.FSA import *
 from Partition import Partition
 
 def convertToDFA(fsa:FSA):

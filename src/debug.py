@@ -1,4 +1,4 @@
-from FSA import FSA, TransitionMap
+from src.FSA import FSA, TransitionMap
 
 """
 Methods needed for debugging.

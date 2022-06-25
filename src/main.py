@@ -1,7 +1,7 @@
-from FSA import *
+from src.FSA import *
 from FSAhelper import *
 from Partition import Partition
-from debug import *
+from src.debug import *
 from isEquivalent import *
 
 def readNFA(id:int):
