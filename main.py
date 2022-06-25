@@ -1,10 +1,10 @@
 from FSA import *
 from FSAhelper import *
-from partition import Partition
+from Partition import Partition
 from debug import *
-from isEquivalent import is_equivalent
+from isEquivalent import *
 
-def parser():
+def readNFA(id:int):
     """
         Accept input then return a machine
 
@@ -23,7 +23,7 @@ def parser():
     name = input()
 
     nQ = int(input())
-    Q = [input() for _ in range(nQ)]
+    Q = [input()+str(id) for _ in range(nQ)]
 
     nS = int(input())
     S = [input() for _ in range(nS)]
@@ -32,28 +32,19 @@ def parser():
     tMap = TransitionMap(S)
     for _ in range(nT):
         src, stimulus, dest = input().split()
-        tMap.add_transition(src, stimulus, dest)
+        tMap.add_transition(src+str(id), stimulus, dest+str(id))
 
-    qI = input()
+    qI = input()+str(id)
 
     nF = int(input())
-    F = [input() for _ in range(nF)]
+    F = [input()+str(id) for _ in range(nF)]
 
     return FSA(name, Q, S, tMap, qI, F)
 
 if __name__ == "__main__":
-    Machines = []
-    while True:     # do while
-        Machines.append(parser())
-        try:
-            input()
-        except EOFError:
-            break
+    M0 = readNFA(0)
+    input() # read empty line
+    M1 = readNFA(1)
 
-    # 2. print the resulting machines
-    for M in Machines:
-        printFSA(M)
-        print()
-
-    # 3. check for equivalence
-    print("equivalent" if is_equivalent(Machines[0],Machines[1]) else "not equivalent")
+    # check for equivalence
+    print("equivalent" if is_equivalent(M0, M1) else "not equivalent")

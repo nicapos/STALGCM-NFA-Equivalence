@@ -1,5 +1,5 @@
 from FSA import *
-from partition import Partition
+from Partition import Partition
 
 def convertToDFA(fsa:FSA):
     """
@@ -49,11 +49,6 @@ def convertToDFA(fsa:FSA):
     fsa.final_states = new_finals
 
 def reduceFSA(fsa:FSA):
-    """
-    reduces the FSA given
-    (updates its transition map and states, doesn't return anything)
-    NOTE: magbbug dito if di pa sya nacconvert to DFA so convert to DFA muna
-    """
      # 1. prepare sets for partition. 1 set for final states, 1 set for non-final states
     final_states = fsa.final_states
     nonfinal_states = [state for state in fsa.states if state not in final_states]
@@ -86,7 +81,7 @@ def reduceFSA(fsa:FSA):
 
         if any(state == fsa.initial_state for state in subset):
             new_I = repr
-        if any(state in fsa.final_states for state in fsa.states) and subset != ['']:
+        if any(state in fsa.final_states for state in subset) and subset != ['']:
             new_F.append(repr)
 
     fsa.states = set(new_Q)
@@ -103,34 +98,3 @@ def reduceFSA(fsa:FSA):
             new_tMap.add_transition(src_state, input, new_dest)
 
     fsa.transition = new_tMap
-
-def renameFSAstates(fsa:FSA, new_labels:list):
-    """
-        renames the states of the given FSA based on the given new_labels
-        NOTE: # of labels in new_labels should be equal to the # of states.
-    """
-    if not len(new_labels) == len(fsa.states): # DEBUG
-        raise Exception("ERROR: # of labels in new_labels should be equal to the # of states.")
-
-    # 1. Create translation table
-    old_labels = list(fsa.states)
-    translate = {old_labels[i] : new_labels[i] for i in range(len(old_labels))}
-
-    # 2. Rename states in transition map
-    tMap = TransitionMap(fsa.stimulus)
-
-    for src_state, stimulus_dest_pair in fsa.transition.tmap.items():
-        new_state = translate[src_state]
-        tMap.tmap[new_state] = {}
-        for stimulus, pair in stimulus_dest_pair.items():
-            tMap.tmap[new_state][stimulus] = translate[pair[0]]
-        
-    fsa.transition = tMap
-
-    # 3. Rename initial and final states
-    fsa.initial_state = translate[fsa.initial_state]
-    new_finals = [translate[state] for state in fsa.final_states]
-    fsa.final_states = new_finals
-
-    # 4. Rename FSA states
-    fsa.states = [translate[state] for state in fsa.states]

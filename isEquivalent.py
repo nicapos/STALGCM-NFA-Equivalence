@@ -1,5 +1,5 @@
 from FSA import *
-from partition import Partition
+from Partition import Partition
 from FSAhelper import *
 
 def is_equivalent(fsa1:FSA, fsa2:FSA) -> bool:
@@ -18,20 +18,11 @@ def is_equivalent(fsa1:FSA, fsa2:FSA) -> bool:
     convertToDFA(fsa2)
     reduceFSA(fsa2)
 
-    # 2. rename the machines (to prevent them from having the same state names)
-    STATE_NAMES = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
-    new_states1 = [STATE_NAMES.pop(0) for _ in range(len(fsa1.states))]
-    renameFSAstates(fsa1, new_states1)
-
-    new_states2 = [STATE_NAMES.pop(0) for _ in range(len(fsa2.states))]
-    renameFSAstates(fsa2, new_states2)
-
-    # 3. Prepare sets for partition. 1 set for final states, 1 set for non-final states
+    # 2. Prepare sets for partition. 1 set for final states, 1 set for non-final states
     final_states = list(fsa1.final_states) + list(fsa2.final_states)
     nonfinal_states = [S for S in list(fsa1.states) + list(fsa2.states) if S not in final_states]
 
-    # 4. Prepare joint transition map for the two FSAs
+    # 3. Prepare joint transition map for the two FSAs
     def get_next_state(src, input):
         if src in fsa1.states:
             return fsa1.get_next_state(src, input)
