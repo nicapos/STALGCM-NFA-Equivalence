@@ -50,4 +50,10 @@ if __name__ == "__main__":
         NFAs.append( readNFA(i) )
 
     # check for equivalence
-    # TODO
+    clusters = findEquivalents(NFAs)
+    clusters = [' '.join(cluster) for cluster in clusters] # format each cluster to string
+    clusters.sort()
+
+    print(len(clusters)) # print num of clusters
+    for cluster in clusters:
+        print(cluster)
