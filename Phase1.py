@@ -33,8 +33,6 @@ class Partition:
         self.stimulus = stimulus
         self.next_state = transition_func # is a method
 
-        self.LIMIT = 10 # DEBUG
-
     def find_subset(self, state) -> int:
         for i in range( len(self.set) ):
             if state in self.set[i]:
@@ -42,8 +40,6 @@ class Partition:
         return -1
 
     def step(self):
-        if self.LIMIT == 0: # DEBUG
-            raise Exception("Partition limit reached.")
         partition_blocks = []
 
         for subset in self.set:
@@ -66,7 +62,6 @@ class Partition:
                 partition_blocks.append(new_block)
         
         self.set = partition_blocks
-        self.LIMIT -= 1 # DEBUG
 
 def convertToDFA(fsa:FSA):
     explore_states = [[fsa.initial_state]]   # queue of sets of states to explore
@@ -124,7 +119,6 @@ def reduceFSA(fsa:FSA):
         partition_algo.step()
 
     # 3. update FSA based on partition subsets
-
     new_Q = []
     new_I = None
     new_F = []
@@ -152,33 +146,6 @@ def reduceFSA(fsa:FSA):
 
     fsa.transition = new_tMap
 
-def renameFSAstates(fsa:FSA, new_labels:list):
-    if not len(new_labels) == len(fsa.states): # DEBUG
-        raise Exception("ERROR: # of labels in new_labels should be equal to the # of states.")
-
-    # 1. Create translation table
-    old_labels = list(fsa.states)
-    translate = {old_labels[i] : new_labels[i] for i in range(len(old_labels))}
-
-    # 2. Rename states in transition map
-    tMap = TransitionMap(fsa.stimulus)
-
-    for src_state, stimulus_dest_pair in fsa.transition.tmap.items():
-        new_state = translate[src_state]
-        tMap.tmap[new_state] = {}
-        for stimulus, pair in stimulus_dest_pair.items():
-            tMap.tmap[new_state][stimulus] = translate[pair[0]]
-        
-    fsa.transition = tMap
-
-    # 3. Rename initial and final states
-    fsa.initial_state = translate[fsa.initial_state]
-    new_finals = [translate[state] for state in fsa.final_states]
-    fsa.final_states = new_finals
-
-    # 4. Rename FSA states
-    fsa.states = [translate[state] for state in fsa.states]
-
 def is_equivalent(fsa1:FSA, fsa2:FSA) -> bool:
     # 0. Check if both FSAs have the same stimulus. If not, matic not-equivalent
     if fsa1.stimulus != fsa2.stimulus:
@@ -190,20 +157,11 @@ def is_equivalent(fsa1:FSA, fsa2:FSA) -> bool:
     convertToDFA(fsa2)
     reduceFSA(fsa2)
 
-    # 2. rename the machines (to prevent them from having the same state names)
-    STATE_NAMES = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
-    new_states1 = [STATE_NAMES.pop(0) for _ in range(len(fsa1.states))]
-    renameFSAstates(fsa1, new_states1)
-
-    new_states2 = [STATE_NAMES.pop(0) for _ in range(len(fsa2.states))]
-    renameFSAstates(fsa2, new_states2)
-
-    # 3. Prepare sets for partition. 1 set for final states, 1 set for non-final states
+    # 2. Prepare sets for partition. 1 set for final states, 1 set for non-final states
     final_states = list(fsa1.final_states) + list(fsa2.final_states)
     nonfinal_states = [S for S in list(fsa1.states) + list(fsa2.states) if S not in final_states]
 
-    # 4. Prepare joint transition map for the two FSAs
+    # 3. Prepare joint transition map for the two FSAs
     def get_next_state(src, input):
         if src in fsa1.states:
             return fsa1.get_next_state(src, input)
@@ -224,36 +182,36 @@ def is_equivalent(fsa1:FSA, fsa2:FSA) -> bool:
 
     return partition_algo.find_subset(fsa1.initial_state) == partition_algo.find_subset(fsa2.initial_state)
 
-def parser():
+def readNFA(id:int):
+    """
+        To make sure that the states are unique across all machines, add the machine id at the end of the state name.
+        Ex. id = 1, scanned states ['Q0','Q1','Q2'] become ['Q01','Q11','Q21']
+    """
     name = input()
 
     nQ = int(input())
-    Q = [input() for _ in range(nQ)]
+    Q = [input()+str(id) for _ in range(nQ)]
 
     nS = int(input())
-    S = [input() for _ in range(nS)]
+    S = [input() for _ in range(nS)] 
 
     nT = int(input())
     tMap = TransitionMap(S)
     for _ in range(nT):
         src, stimulus, dest = input().split()
-        tMap.add_transition(src, stimulus, dest)
+        tMap.add_transition(src+str(id), stimulus, dest+str(id))
 
-    qI = input()
+    qI = input()+str(id)
 
     nF = int(input())
-    F = [input() for _ in range(nF)]
+    F = [input()+str(id) for _ in range(nF)]
 
     return FSA(name, Q, S, tMap, qI, F)
 
 if __name__ == "__main__":
-    Machines = []
-    while True:     # do while
-        Machines.append(parser())
-        try:
-            input()
-        except EOFError:
-            break
+    M0 = readNFA(0)
+    input() # read empty line
+    M1 = readNFA(1)
 
     # check for equivalence
-    print("equivalent" if is_equivalent(Machines[0],Machines[1]) else "not equivalent")
+    print("equivalent" if is_equivalent(M0, M1) else "not equivalent")
