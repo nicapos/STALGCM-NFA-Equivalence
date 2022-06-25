@@ -1,0 +1,62 @@
+3
+
+M0
+3
+Q0
+Q1
+Q2
+3
+a
+b
+c
+4
+Q1 a Q0
+Q1 b Q0
+Q2 b Q1
+Q2 c Q0
+Q1
+2
+Q1
+Q2
+
+M1
+3
+Q0
+Q1
+Q2
+3
+a
+b
+c
+5
+Q1 a Q0
+Q1 b Q0
+Q1 c Q0
+Q2 b Q0
+Q2 c Q1
+Q0
+3
+Q0
+Q1
+Q2
+
+M2
+3
+Q0
+Q1
+Q2
+3
+a
+b
+c
+5
+Q1 a Q0
+Q1 b Q0
+Q1 c Q0
+Q2 b Q0
+Q2 c Q1
+Q0
+3
+Q0
+Q1
+Q2
