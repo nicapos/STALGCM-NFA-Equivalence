@@ -42,9 +42,12 @@ def readNFA(id:int):
     return FSA(name, Q, S, tMap, qI, F)
 
 if __name__ == "__main__":
-    M0 = readNFA(0)
-    input() # read empty line
-    M1 = readNFA(1)
+    NFAs = []
+    N = input() # num of NFAs to read
+
+    for i in range(N):
+        input() # read empty line
+        NFAs.append( readNFA(i) )
 
     # check for equivalence
-    print("equivalent" if is_equivalent(M0, M1) else "not equivalent")
+    # TODO
